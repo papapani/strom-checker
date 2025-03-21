@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tanken oder Strom?</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2em;
+      max-width: 500px;
+      margin: auto;
+    }
+    h1 {
+    text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+    }
+    .grid label {
+      margin-top: 1em;
+      display: block;
+    }
+    input {
+      padding: 0.4em;
+      font-size: 1em;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 2em;
+      padding: 0.6em 1em;
+      font-size: 1em;
+      width: 100%;
+    }
+    .result {
+      margin-top: 2em;
+      font-weight: bold;
+      font-size: 1.3em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tanken oder Strom laden?</h1>
+
+  <div class="grid">
+    <div>
+      <label for="strompreis">Strompreis (ct/kWh)</label>
+      <input type="number" id="strompreis" step="1" value="62" />
+    </div>
+    <div>
+      <label for="stromverbrauch">Stromverbrauch (kWh/100 km)</label>
+      <input type="number" id="stromverbrauch" step="0.1" value="20" />
+    </div>
+    <div>
+      <label for="benzinpreis">Benzinpreis (€/Liter)</label>
+      <input type="number" id="benzinpreis" step="0.01" value="1.75" />
+    </div>
+    <div>
+      <label for="benzinverbrauch">Benzinverbrauch (l/100 km)</label>
+      <input type="number" id="benzinverbrauch" step="0.1" value="9" />
+    </div>
+  </div>
+
+  <button onclick="berechnen()">Vergleichen</button>
+
+  <div class="result" id="ergebnis"></div>
+
+  <script>
+    function berechnen() {
+      const strompreisCt = parseFloat(document.getElementById('strompreis').value);
+      const strompreis = strompreisCt / 100; // Umrechnen in €/kWh
+      const benzinpreis = parseFloat(document.getElementById('benzinpreis').value);
+      const stromVerbrauch = parseFloat(document.getElementById('stromverbrauch').value);
+      const benzinVerbrauch = parseFloat(document.getElementById('benzinverbrauch').value);
+
+      const kostenStrom = strompreis * stromVerbrauch;
+      const kostenBenzin = benzinpreis * benzinVerbrauch;
+      const differenz = Math.abs(kostenStrom - kostenBenzin).toFixed(2);
+
+      let ergebnisText = "";
+
+  if (kostenStrom < kostenBenzin) {
+    ergebnisText = `
+      <span style="display:block">⚡ Lade Strom</span>
+      <span style="display:block">(+${differenz} € gespart pro 100 km)</span>
+    `;
+  } else if (kostenStrom > kostenBenzin) {
+    ergebnisText = `
+      <span style="display:block">⛽ Tanke Benzin</span>
+      <span style="display:block">(+${differenz} € gespart pro 100 km)</span>
+    `;
+  } else {
+    ergebnisText = `
+      <span style="display:block">↔️ Beide gleich teuer.</span>
+    `;
+  }
+
+  document.getElementById('ergebnis').innerHTML = ergebnisText;
+}
+
+    
+  </script>
+</body>
+</html>
